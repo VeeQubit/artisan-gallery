@@ -7,7 +7,7 @@ const authRoutes=require("./routes/authRoutes");
 
 const app = express();
 const productRoutes=require("./routes/productRoutes");
-
+const categoryRoutes=require("./routes/categoryRoutes");
 // Middleware
 
 app.use(cors());
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/products",productRoutes);
-
+app.use("/api/categories",categoryRoutes);
 // Testing Route
 
 app.get("/", (req,res)=>{
