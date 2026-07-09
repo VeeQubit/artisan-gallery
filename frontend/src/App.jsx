@@ -13,7 +13,7 @@ import Dashboard from "./pages/Dashboard";
 
 import DashboardLayout from "./layouts/DashboardLayout";
 
-
+import Products from "./pages/Products";
 
 function App(){
 
@@ -32,7 +32,25 @@ element={<Login/>}
 
 />
 
+<Route
 
+path="/products"
+
+element={
+
+
+<DashboardLayout>
+
+
+<Products/>
+
+
+</DashboardLayout>
+
+
+}
+
+/>
 
 <Route
 
