@@ -16,8 +16,162 @@ price,
 quantity,
 image
 
-
 }=req.body;
+
+
+
+// required validation
+
+if(
+!category_id ||
+!name ||
+!price ||
+!quantity
+){
+
+
+return res.status(400).json({
+
+success:false,
+
+message:"Please fill all required fields"
+
+});
+
+
+}
+
+
+
+// price validation
+
+if(price<=0){
+
+
+return res.status(400).json({
+
+success:false,
+
+message:"Price must be greater than 0"
+
+});
+
+
+}
+
+
+
+// quantity validation
+
+if(quantity<0){
+
+
+return res.status(400).json({
+
+success:false,
+
+message:"Quantity cannot be negative"
+
+});
+
+
+}
+
+
+
+
+// check category exists
+
+
+db.query(
+
+"SELECT * FROM categories WHERE category_id=?",
+
+[category_id],
+
+
+(error,category)=>{
+
+
+if(error){
+
+
+return res.status(500).json({
+
+success:false,
+
+message:"Database error"
+
+});
+
+
+}
+
+
+
+
+if(category.length===0){
+
+
+return res.status(400).json({
+
+success:false,
+
+message:"Selected category does not exist"
+
+});
+
+
+}
+
+
+
+
+// duplicate product check
+
+
+db.query(
+
+"SELECT * FROM products WHERE name=?",
+
+[name],
+
+
+(error,existing)=>{
+
+
+if(error){
+
+
+return res.status(500).json({
+
+success:false,
+
+message:"Database error"
+
+});
+
+
+}
+
+
+
+
+if(existing.length>0){
+
+
+return res.status(409).json({
+
+success:false,
+
+message:"Product already exists"
+
+});
+
+
+}
+
+
 
 
 
@@ -45,6 +199,7 @@ image
 ],
 
 
+
 (error,result)=>{
 
 
@@ -55,9 +210,7 @@ return res.status(500).json({
 
 success:false,
 
-message:"Product creation failed",
-
-error:error.message
+message:"Product creation failed"
 
 });
 
@@ -68,15 +221,11 @@ error:error.message
 
 res.status(201).json({
 
-
 success:true,
-
 
 message:"Product created successfully",
 
-
 productId:result.insertId
-
 
 });
 
@@ -87,7 +236,23 @@ productId:result.insertId
 );
 
 
+}
+
+);
+
+
+}
+
+
+);
+
+
 };
+
+
+
+
+
 
 
 
@@ -175,6 +340,10 @@ products:result
 
 
 
+
+
+
+
 // GET SINGLE PRODUCT
 
 
@@ -200,6 +369,8 @@ if(error){
 
 return res.status(500).json({
 
+success:false,
+
 message:"Database error"
 
 });
@@ -212,6 +383,8 @@ if(result.length===0){
 
 
 return res.status(404).json({
+
+success:false,
 
 message:"Product not found"
 
@@ -231,6 +404,11 @@ res.json(result[0]);
 
 
 };
+
+
+
+
+
 
 
 
@@ -263,6 +441,46 @@ image
 
 
 }=req.body;
+
+
+
+
+
+if(
+!name ||
+!category_id ||
+!price ||
+!quantity
+){
+
+
+return res.status(400).json({
+
+success:false,
+
+message:"Please fill all required fields"
+
+});
+
+
+}
+
+
+
+
+if(price<=0){
+
+
+return res.status(400).json({
+
+success:false,
+
+message:"Invalid price value"
+
+});
+
+
+}
 
 
 
@@ -326,6 +544,8 @@ if(error){
 
 return res.status(500).json({
 
+success:false,
+
 message:"Update failed"
 
 });
@@ -338,6 +558,8 @@ message:"Update failed"
 
 res.json({
 
+
+success:true,
 
 message:"Product updated successfully"
 
@@ -353,6 +575,9 @@ message:"Product updated successfully"
 
 
 };
+
+
+
 
 
 
@@ -386,6 +611,8 @@ if(error){
 return res.status(500).json({
 
 
+success:false,
+
 message:"Delete failed"
 
 
@@ -399,6 +626,7 @@ message:"Delete failed"
 
 res.json({
 
+success:true,
 
 message:"Product deleted successfully"
 

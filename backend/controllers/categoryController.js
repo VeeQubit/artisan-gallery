@@ -2,6 +2,7 @@ const db=require("../config/db");
 
 
 
+
 // CREATE CATEGORY
 
 exports.createCategory=(req,res)=>{
@@ -15,6 +16,7 @@ description
 
 
 }=req.body;
+
 
 
 
@@ -36,6 +38,53 @@ message:"Category name required"
 
 
 
+
+db.query(
+
+"SELECT * FROM categories WHERE category_name=?",
+
+[category_name],
+
+
+(error,result)=>{
+
+
+if(error){
+
+
+return res.status(500).json({
+
+success:false,
+
+message:"Database error"
+
+});
+
+
+}
+
+
+
+
+if(result.length>0){
+
+
+return res.status(409).json({
+
+success:false,
+
+message:"Category already exists"
+
+});
+
+
+}
+
+
+
+
+
+
 const sql=
 
 "INSERT INTO categories(category_name,description) VALUES(?,?)";
@@ -46,10 +95,15 @@ db.query(
 
 sql,
 
-[category_name,description],
+[
+category_name,
+description
+],
+
 
 
 (error,result)=>{
+
 
 
 if(error){
@@ -89,7 +143,19 @@ categoryId:result.insertId
 
 
 
+}
+
+
+);
+
+
+
 };
+
+
+
+
+
 
 
 
@@ -126,6 +192,7 @@ message:"Failed to fetch categories"
 
 
 
+
 res.status(200).json({
 
 
@@ -142,6 +209,11 @@ categories:result
 
 
 };
+
+
+
+
+
 
 
 
@@ -166,6 +238,8 @@ description
 
 
 
+
+
 const sql=
 
 `
@@ -184,11 +258,13 @@ WHERE category_id=?
 
 
 
+
 db.query(
 
 sql,
 
 [category_name,description,id],
+
 
 
 (error,result)=>{
@@ -198,6 +274,8 @@ if(error){
 
 
 return res.status(500).json({
+
+success:false,
 
 message:"Category update failed"
 
@@ -212,6 +290,8 @@ message:"Category update failed"
 
 res.json({
 
+success:true,
+
 message:"Category updated successfully"
 
 });
@@ -225,6 +305,9 @@ message:"Category updated successfully"
 
 
 };
+
+
+
 
 
 
@@ -257,6 +340,8 @@ if(error){
 
 return res.status(500).json({
 
+success:false,
+
 message:"Category delete failed"
 
 });
@@ -268,6 +353,8 @@ message:"Category delete failed"
 
 
 res.json({
+
+success:true,
 
 message:"Category deleted successfully"
 
