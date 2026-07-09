@@ -11,6 +11,8 @@ import Login from "./pages/Login";
 
 import Dashboard from "./pages/Dashboard";
 
+import DashboardLayout from "./layouts/DashboardLayout";
+
 
 
 function App(){
@@ -31,11 +33,24 @@ element={<Login/>}
 />
 
 
+
 <Route
 
 path="/dashboard"
 
-element={<Dashboard/>}
+element={
+
+
+<DashboardLayout>
+
+
+<Dashboard/>
+
+
+</DashboardLayout>
+
+
+}
 
 />
 
@@ -43,7 +58,7 @@ element={<Dashboard/>}
 </Routes>
 
 
-)
+);
 
 
 }
