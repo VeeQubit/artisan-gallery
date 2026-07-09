@@ -14,9 +14,24 @@ import {
 
 FiTrash2,
 
-FiPlus
+FiPlus,
+
+FiEdit,
+
+FiX
 
 } from "react-icons/fi";
+
+
+import {
+
+motion
+
+} from "framer-motion";
+
+
+import toast from "react-hot-toast";
+
 
 
 
@@ -24,16 +39,28 @@ FiPlus
 function Categories(){
 
 
+
 const [categories,setCategories]=useState([]);
+
+
+
+const [editId,setEditId]=useState(null);
+
+
 
 
 const [form,setForm]=useState({
 
+
 category_name:"",
+
 
 description:""
 
+
 });
+
+
 
 
 
@@ -42,9 +69,13 @@ description:""
 const fetchCategories=async()=>{
 
 
+try{
+
+
 const res=
 
 await api.get("/categories");
+
 
 
 setCategories(
@@ -54,7 +85,26 @@ res.data.categories
 );
 
 
+}
+
+
+catch(error){
+
+
+toast.error(
+
+"Failed to load categories"
+
+);
+
+
+}
+
+
+
 };
+
+
 
 
 
@@ -73,10 +123,16 @@ fetchCategories();
 
 
 
-const addCategory=async(e)=>{
+
+
+const submitCategory=async(e)=>{
 
 
 e.preventDefault();
+
+
+
+try{
 
 
 
@@ -85,6 +141,53 @@ const token=
 localStorage.getItem("token");
 
 
+
+
+
+
+if(editId){
+
+
+
+const res=
+
+await api.put(
+
+`/categories/${editId}`,
+
+form,
+
+{
+
+headers:{
+
+Authorization:`Bearer ${token}`
+
+}
+
+}
+
+);
+
+
+
+toast.success(
+
+res.data.message
+
+);
+
+
+
+}
+
+
+
+else{
+
+
+
+const res=
 
 await api.post(
 
@@ -106,6 +209,21 @@ Authorization:`Bearer ${token}`
 
 
 
+
+toast.success(
+
+res.data.message
+
+);
+
+
+
+}
+
+
+
+
+
 setForm({
 
 category_name:"",
@@ -116,7 +234,36 @@ description:""
 
 
 
+setEditId(null);
+
+
+
 fetchCategories();
+
+
+
+
+}
+
+
+
+catch(error){
+
+
+
+toast.error(
+
+
+error.response?.data?.message ||
+
+"Operation failed"
+
+
+);
+
+
+
+}
 
 
 
@@ -127,7 +274,74 @@ fetchCategories();
 
 
 
+
+
+
+const startEdit=(item)=>{
+
+
+
+setEditId(
+
+item.category_id
+
+);
+
+
+
+setForm({
+
+
+category_name:item.category_name,
+
+
+description:item.description
+
+
+});
+
+
+
+};
+
+
+
+
+
+
+
+
+const cancelEdit=()=>{
+
+
+setEditId(null);
+
+
+
+setForm({
+
+
+category_name:"",
+
+
+description:""
+
+
+});
+
+
+};
+
+
+
+
+
+
+
+
+
 const deleteCategory=async(id)=>{
+
 
 
 if(!window.confirm("Delete category?"))
@@ -137,11 +351,18 @@ return;
 
 
 
+try{
+
+
+
 const token=
 
 localStorage.getItem("token");
 
 
+
+
+const res=
 
 await api.delete(
 
@@ -163,7 +384,40 @@ Authorization:`Bearer ${token}`
 
 
 
+
+toast.success(
+
+res.data.message
+
+);
+
+
+
 fetchCategories();
+
+
+
+}
+
+
+
+catch(error){
+
+
+
+toast.error(
+
+error.response?.data?.message ||
+
+"Delete failed"
+
+);
+
+
+
+}
+
+
 
 
 };
@@ -173,12 +427,52 @@ fetchCategories();
 
 
 
+
+
+
+
+
 return(
 
-<div>
+
+<motion.div
+
+
+initial={{
+
+
+opacity:0,
+
+
+y:30
+
+
+}}
+
+
+
+animate={{
+
+
+opacity:1,
+
+
+y:0
+
+
+}}
+
+
+>
+
+
+
+
+
 
 
 <h1
+
 
 className="
 
@@ -186,9 +480,9 @@ text-3xl
 
 font-bold
 
-text-[#3B0A1E]
+text-[#3B0617]
 
-mb-8
+mb-2
 
 "
 
@@ -200,15 +494,39 @@ Categories
 
 
 
+<p
+
+className="
+
+text-[#9F4564]
+
+mb-8
+
+"
+
+>
+
+Organize artisan product collections
+
+</p>
+
+
+
+
+
+
+
+
 
 <form
 
-onSubmit={addCategory}
+
+onSubmit={submitCategory}
 
 
 className="
 
-bg-white
+bg-white/80
 
 rounded-3xl
 
@@ -220,12 +538,19 @@ mb-8
 
 flex
 
-
 gap-4
+
+border
+
+border-[#F4D7E1]
 
 "
 
 >
+
+
+
+
 
 
 
@@ -238,7 +563,9 @@ placeholder="Category name"
 value={form.category_name}
 
 
+
 onChange={(e)=>
+
 
 setForm({
 
@@ -248,22 +575,21 @@ category_name:e.target.value
 
 })
 
+
 }
+
 
 
 className="
 
-border
-
-rounded-xl
-
-p-3
+inputStyle
 
 flex-1
 
 "
 
 />
+
 
 
 
@@ -278,26 +604,28 @@ placeholder="Description"
 value={form.description}
 
 
+
 onChange={(e)=>
+
 
 setForm({
 
 ...form,
 
+
 description:e.target.value
 
+
 })
+
 
 }
 
 
+
 className="
 
-border
-
-rounded-xl
-
-p-3
+inputStyle
 
 flex-1
 
@@ -309,11 +637,18 @@ flex-1
 
 
 
+
+
 <button
+
 
 className="
 
-bg-[#6D1A36]
+bg-gradient-to-r
+
+from-[#9F1239]
+
+to-[#3B0617]
 
 text-white
 
@@ -332,12 +667,87 @@ gap-2
 >
 
 
+
+{
+
+
+editId?
+
+<FiEdit/>
+
+:
+
 <FiPlus/>
 
-Add
+
+}
+
+
+
+{
+
+
+editId?
+
+"Update"
+
+:
+
+"Add"
+
+
+}
+
 
 
 </button>
+
+
+
+
+
+
+{
+
+
+editId &&
+
+
+<button
+
+
+type="button"
+
+
+onClick={cancelEdit}
+
+
+
+className="
+
+bg-gray-200
+
+px-5
+
+rounded-xl
+
+"
+
+>
+
+
+<FiX/>
+
+
+</button>
+
+
+
+}
+
+
+
+
 
 
 
@@ -348,11 +758,15 @@ Add
 
 
 
+
+
+
 <div
+
 
 className="
 
-bg-white
+bg-white/80
 
 rounded-3xl
 
@@ -360,15 +774,22 @@ shadow-xl
 
 overflow-hidden
 
+border
+
+border-[#F4D7E1]
+
 "
 
 >
 
 
+
 <table className="w-full">
 
 
+
 <tbody>
+
 
 
 {
@@ -376,42 +797,147 @@ overflow-hidden
 
 categories.map(
 
-(item)=>(
+(item,index)=>(
 
 
 
-<tr
+
+<motion.tr
+
+
+
+initial={{
+
+opacity:0,
+
+x:-20
+
+}}
+
+
+animate={{
+
+
+opacity:1,
+
+
+x:0
+
+
+}}
+
+
+
+transition={{
+
+
+delay:index*.1
+
+
+}}
+
+
 
 key={item.category_id}
 
+
 className="border-b"
 
+
+
 >
+
+
 
 
 <td className="p-5">
 
 
+<div>
+
+
+<h3
+
+className="font-semibold text-[#3B0617]"
+
+>
+
+
 {item.category_name}
 
 
-</td>
+</h3>
 
 
 
+<p
 
-<td>
+className="text-sm text-[#9F4564]"
 
+>
 
 {item.description}
 
+</p>
+
+
+</div>
+
 
 </td>
 
 
 
 
+
+
+
+
 <td>
+
+
+
+<div
+
+className="
+
+flex
+
+justify-end
+
+gap-5
+
+pr-8
+
+"
+
+>
+
+
+
+
+<button
+
+
+onClick={()=>startEdit(item)}
+
+>
+
+
+<FiEdit
+
+className="text-[#7A1232]"
+
+
+/>
+
+
+</button>
+
+
+
+
+
 
 
 <button
@@ -427,6 +953,7 @@ item.category_id
 >
 
 
+
 <FiTrash2
 
 className="text-red-700"
@@ -434,14 +961,24 @@ className="text-red-700"
 />
 
 
+
 </button>
+
+
+
+
+
+</div>
+
 
 
 </td>
 
 
 
-</tr>
+
+
+</motion.tr>
 
 
 
@@ -452,17 +989,21 @@ className="text-red-700"
 }
 
 
+
 </tbody>
 
 
 </table>
 
 
-</div>
-
-
 
 </div>
+
+
+
+
+
+</motion.div>
 
 
 )

@@ -1,10 +1,12 @@
 import {
-
-useEffect,
-
-useState
-
+  useEffect,
+  useState
 } from "react";
+
+
+import {
+  motion
+} from "framer-motion";
 
 
 import Card from "../components/Card";
@@ -14,16 +16,14 @@ import api from "../api/axios";
 
 
 import {
-
-FiBox,
-
-FiTag,
-
-FiShoppingBag,
-
-FiTrendingUp
-
+  FiBox,
+  FiTag,
+  FiShoppingBag,
+  FiTrendingUp,
+  FiActivity,
+  FiCheckCircle
 } from "react-icons/fi";
+
 
 
 
@@ -45,6 +45,7 @@ stock:0
 
 
 
+
 useEffect(()=>{
 
 
@@ -54,28 +55,26 @@ const fetchStats=async()=>{
 try{
 
 
-const res=
+const res =
+await api.get(
+"/dashboard/stats"
+);
 
-await api.get("/dashboard/stats");
 
 
-
-setStats(res.data);
-
+setStats(
+res.data
+);
 
 
 }
-
 
 catch(error){
 
 
 console.log(
-
 "Dashboard stats error",
-
 error
-
 );
 
 
@@ -89,7 +88,9 @@ error
 fetchStats();
 
 
+
 },[]);
+
 
 
 
@@ -98,13 +99,16 @@ fetchStats();
 const dashboardCards=[
 
 
+
 {
 
-title:"Products",
+title:"Total Products",
 
 value:stats.products,
 
-icon:<FiBox/>
+icon:<FiBox/>,
+
+text:"Managed collections"
 
 },
 
@@ -116,7 +120,9 @@ title:"Categories",
 
 value:stats.categories,
 
-icon:<FiTag/>
+icon:<FiTag/>,
+
+text:"Product groups"
 
 },
 
@@ -124,11 +130,13 @@ icon:<FiTag/>
 
 {
 
-title:"Stock Items",
+title:"Inventory Stock",
 
 value:stats.stock || 0,
 
-icon:<FiShoppingBag/>
+icon:<FiShoppingBag/>,
+
+text:"Available items"
 
 },
 
@@ -136,16 +144,22 @@ icon:<FiShoppingBag/>
 
 {
 
-title:"Growth",
+title:"Performance",
 
 value:"25%",
 
-icon:<FiTrendingUp/>
+icon:<FiTrendingUp/>,
+
+text:"Business growth"
 
 }
 
 
+
 ];
+
+
+
 
 
 
@@ -157,21 +171,39 @@ return(
 <div>
 
 
-{/* Header */}
+{/* HEADER */}
 
 
-<div className="mb-8">
+
+<motion.div
+
+
+initial={{
+opacity:0,
+y:20
+}}
+
+animate={{
+opacity:1,
+y:0
+}}
+
+
+className="mb-10"
+
+
+>
 
 
 <h1
 
 className="
 
-text-3xl
+text-4xl
 
-font-bold
+font-black
 
-text-[#3B0A1E]
+text-[#3B0617]
 
 "
 
@@ -183,24 +215,25 @@ Business Overview
 
 
 
+
 <p
 
 className="
 
 text-[#9F4564]
 
-mt-1
+mt-2
 
 "
 
 >
 
-Track your handmade collection performance
+Monitor your artisan inventory performance and operations
 
 </p>
 
 
-</div>
+</motion.div>
 
 
 
@@ -208,7 +241,10 @@ Track your handmade collection performance
 
 
 
-{/* Statistic Cards */}
+
+
+{/* CARDS */}
+
 
 
 <div
@@ -233,13 +269,95 @@ gap-6
 {
 
 
-dashboardCards.map(
-
-(item,index)=>(
+dashboardCards.map((item,index)=>(
 
 
+<motion.div
 
-<Card key={index}>
+
+key={index}
+
+
+initial={{
+
+opacity:0,
+
+y:60,
+
+scale:0.9
+
+}}
+
+
+animate={{
+
+opacity:1,
+
+y:0,
+
+scale:1
+
+}}
+
+
+transition={{
+
+
+duration:0.7,
+
+
+delay:0.4 + index * 0.25,
+
+
+ease:"easeOut"
+
+
+}}
+
+
+
+whileHover={{
+
+
+y:-10,
+
+
+scale:1.03,
+
+
+transition:{
+
+duration:0.25
+
+}
+
+
+}}
+
+
+>
+
+
+
+<Card>
+
+
+<div
+
+className="
+
+flex
+
+items-center
+
+justify-between
+
+mb-8
+
+"
+
+>
+
 
 
 <div
@@ -252,9 +370,13 @@ h-14
 
 rounded-2xl
 
-bg-[#F4E6EA]
+bg-gradient-to-br
 
-text-[#6D1A36]
+from-[#9F1239]
+
+to-[#3B0617]
+
+text-white
 
 flex
 
@@ -262,9 +384,9 @@ items-center
 
 justify-center
 
-text-3xl
+text-2xl
 
-mb-5
+shadow-lg
 
 "
 
@@ -274,8 +396,23 @@ mb-5
 {item.icon}
 
 
+</div>
+
+
+
+<FiActivity
+
+className="
+
+text-[#C85A7C]
+
+"
+
+/>
+
 
 </div>
+
 
 
 
@@ -287,22 +424,17 @@ className="
 
 text-4xl
 
-font-bold
+font-black
 
-text-[#3B0A1E]
+text-[#3B0617]
 
 "
 
 >
 
-
 {item.value}
 
-
-
 </h2>
-
-
 
 
 
@@ -310,7 +442,9 @@ text-[#3B0A1E]
 
 className="
 
-text-[#9F4564]
+font-semibold
+
+text-[#7A1232]
 
 mt-2
 
@@ -318,23 +452,40 @@ mt-2
 
 >
 
-
 {item.title}
 
-
-
 </p>
+
+
+
+<span
+
+className="
+
+text-sm
+
+text-[#9F4564]
+
+"
+
+>
+
+{item.text}
+
+</span>
 
 
 
 </Card>
 
 
-)
+</motion.div>
 
-)
+
+))
 
 }
+
 
 
 </div>
@@ -346,20 +497,54 @@ mt-2
 
 
 
-{/* Welcome Section */}
+
+{/* LOWER SECTION */}
 
 
 <div
 
 className="
 
+grid
+
+grid-cols-1
+
+lg:grid-cols-3
+
+gap-8
+
 mt-10
 
-bg-gradient-to-r
+"
 
-from-[#3B0A1E]
+>
 
-to-[#6D1A36]
+
+
+
+<motion.div
+
+
+initial={{
+opacity:0,
+x:-30
+}}
+
+
+animate={{
+opacity:1,
+x:0
+}}
+
+
+transition={{
+delay:.5
+}}
+
+
+className="
+
+lg:col-span-2
 
 rounded-3xl
 
@@ -369,9 +554,18 @@ text-white
 
 shadow-xl
 
+bg-gradient-to-br
+
+from-[#3B0617]
+
+via-[#7A1232]
+
+to-[#9F4564]
+
 "
 
 >
+
 
 
 <h2
@@ -397,25 +591,156 @@ Welcome Back Admin
 
 className="
 
-mt-3
+mt-4
 
-opacity-80
+text-white/80
+
+leading-7
 
 "
 
 >
 
-Manage your artisan products, categories and creative inventory.
+Your Artisan Gallery workspace is ready.
+Manage product collections, monitor inventory
+records and organize your handmade business.
 
 </p>
 
 
 
+</motion.div>
+
+
+
+
+
+
+
+
+
+<motion.div
+
+
+initial={{
+opacity:0,
+x:30
+}}
+
+animate={{
+opacity:1,
+x:0
+}}
+
+transition={{
+delay:.6
+}}
+
+
+className="
+
+bg-white/80
+
+backdrop-blur-xl
+
+rounded-3xl
+
+shadow-xl
+
+p-8
+
+"
+
+>
+
+
+<h3
+
+className="
+
+font-bold
+
+text-[#3B0617]
+
+mb-6
+
+"
+
+>
+
+System Status
+
+</h3>
+
+
+
+{
+
+
+[
+
+"Secure admin session",
+
+"Database connected",
+
+"Inventory active"
+
+
+].map((item,index)=>(
+
+
+
+<div
+
+key={index}
+
+className="
+
+flex
+
+items-center
+
+gap-3
+
+mb-4
+
+text-[#7A1232]
+
+"
+
+>
+
+
+<FiCheckCircle/>
+
+
+{item}
+
+
+</div>
+
+
+))
+
+}
+
+
+
+</motion.div>
+
+
+
+
+
+
 </div>
 
 
 
+
+
 </div>
+
 
 )
 

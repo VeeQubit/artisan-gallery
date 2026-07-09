@@ -13,22 +13,40 @@ FiTrash2,
 
 FiEdit,
 
-FiPlus
+FiPlus,
+
+FiImage
 
 } from "react-icons/fi";
 
 
+import {
+
+motion
+
+} from "framer-motion";
+
+
 import api from "../api/axios";
 
-import { useNavigate } from "react-router-dom";
+
+import {
+
+useNavigate
+
+} from "react-router-dom";
+
 
 import Loader from "../components/Loader";
+
 
 import toast from "react-hot-toast";
 
 
 
+
 function Products(){
+
 
 
 const navigate = useNavigate();
@@ -36,7 +54,10 @@ const navigate = useNavigate();
 
 const [products,setProducts]=useState([]);
 
+
 const [loading,setLoading]=useState(true);
+
+
 
 
 
@@ -71,10 +92,15 @@ res.data.products
 catch(error){
 
 
-console.log(error);
+toast.error(
+
+"Failed to load products"
+
+);
 
 
 }
+
 
 
 finally{
@@ -87,6 +113,7 @@ setLoading(false);
 
 
 };
+
 
 
 
@@ -105,22 +132,15 @@ fetchProducts();
 
 
 
+
 const deleteProduct=async(id)=>{
 
 
-const confirmDelete=
 
-window.confirm(
-
-"Delete this product?"
-
-);
-
-
-
-if(!confirmDelete)
+if(!window.confirm("Delete this product?"))
 
 return;
+
 
 
 
@@ -136,7 +156,6 @@ localStorage.getItem("token");
 
 await api.delete(
 
-
 `/products/${id}`,
 
 {
@@ -148,7 +167,6 @@ Authorization:`Bearer ${token}`
 
 
 }
-
 
 }
 
@@ -169,6 +187,7 @@ fetchProducts();
 
 
 }
+
 
 
 catch(error){
@@ -194,10 +213,18 @@ toast.error(
 
 
 
+
+
+
 return(
 
 <div>
 
+
+
+
+
+{/* HEADER */}
 
 
 <div
@@ -217,7 +244,6 @@ mb-8
 >
 
 
-
 <div>
 
 
@@ -229,7 +255,7 @@ text-3xl
 
 font-bold
 
-text-[#3B0A1E]
+text-[#3B0617]
 
 "
 
@@ -252,8 +278,8 @@ Manage handmade collections
 </p>
 
 
-
 </div>
+
 
 
 
@@ -276,9 +302,9 @@ gap-2
 
 bg-gradient-to-r
 
-from-[#6D1A36]
+from-[#9F1239]
 
-to-[#3B0A1E]
+to-[#3B0617]
 
 text-white
 
@@ -289,6 +315,10 @@ py-3
 rounded-xl
 
 shadow-lg
+
+hover:-translate-y-1
+
+transition
 
 "
 
@@ -301,13 +331,16 @@ shadow-lg
 Add Product
 
 
-
 </button>
 
 
 
-
 </div>
+
+
+
+
+
 
 
 
@@ -326,21 +359,55 @@ loading ?
 :
 
 
-<div
+<motion.div
+
+
+initial={{
+
+opacity:0,
+
+y:30
+
+}}
+
+
+animate={{
+
+opacity:1,
+
+y:0
+
+}}
+
+
+
+transition={{
+
+duration:.5
+
+}}
+
+
 
 className="
 
-bg-white/80
+bg-white/90
 
 rounded-3xl
 
-shadow-xl
+shadow-2xl
 
-overflow-x-auto
+overflow-hidden
+
+border
+
+border-[#F4D7E1]
 
 "
 
 >
+
+
 
 
 
@@ -351,8 +418,10 @@ className="w-full"
 >
 
 
-<thead>
 
+
+
+<thead>
 
 
 <tr
@@ -361,19 +430,28 @@ className="
 
 bg-[#F4E6EA]
 
-text-[#3B0A1E]
+text-[#3B0617]
+
+text-sm
 
 "
 
 >
 
 
-<th className="p-5 text-left">
 
-Product
+<th className="p-5">
+
+Product Image
 
 </th>
 
+
+<th>
+
+Product Name
+
+</th>
 
 
 <th>
@@ -383,7 +461,6 @@ Category
 </th>
 
 
-
 <th>
 
 Price
@@ -391,13 +468,11 @@ Price
 </th>
 
 
-
 <th>
 
 Stock
 
 </th>
-
 
 
 <th>
@@ -418,14 +493,16 @@ Actions
 
 
 
+
+
 <tbody>
+
 
 
 
 {
 
-
-products.length===0 && (
+products.length===0 &&
 
 
 <tr>
@@ -433,8 +510,7 @@ products.length===0 && (
 
 <td
 
-colSpan="5"
-
+colSpan="6"
 
 className="
 
@@ -448,7 +524,6 @@ text-[#9F4564]
 
 >
 
-
 No products available
 
 
@@ -458,9 +533,8 @@ No products available
 </tr>
 
 
-)
-
 }
+
 
 
 
@@ -473,21 +547,190 @@ No products available
 
 products.map(
 
-(product)=>(
+(product,index)=>(
 
 
 
-<tr
+<motion.tr
+
 
 key={product.product_id}
 
-className="border-b"
+
+
+initial={{
+
+opacity:0,
+
+y:25
+
+}}
+
+
+animate={{
+
+opacity:1,
+
+y:0
+
+}}
+
+
+transition={{
+
+delay:index*0.12
+
+}}
+
+
+
+className="
+
+border-b
+
+border-[#E7CAD2]
+
+hover:bg-[#FFF7FA]
+
+transition
+
+"
 
 >
 
 
 
-<td className="p-5">
+
+
+
+
+{/* IMAGE */}
+
+
+<td
+
+className="
+
+p-5
+
+text-center
+
+"
+
+>
+
+
+<div
+
+className="
+
+mx-auto
+
+w-20
+
+h-20
+
+rounded-2xl
+
+overflow-hidden
+
+bg-[#F4E6EA]
+
+flex
+
+items-center
+
+justify-center
+
+shadow
+
+"
+
+>
+
+
+{
+
+
+product.image ?
+
+
+
+<img
+
+
+src={product.image}
+
+
+alt={product.name}
+
+
+className="
+
+w-full
+
+h-full
+
+object-cover
+
+"
+
+
+/>
+
+
+:
+
+
+
+<FiImage
+
+className="
+
+text-3xl
+
+text-[#7A1232]
+
+"
+
+/>
+
+
+
+}
+
+
+
+
+</div>
+
+
+</td>
+
+
+
+
+
+
+
+
+
+{/* NAME */}
+
+
+<td
+
+className="
+
+text-center
+
+font-semibold
+
+text-[#3B0617]
+
+"
+
+>
 
 
 {product.name}
@@ -498,7 +741,25 @@ className="border-b"
 
 
 
-<td>
+
+
+
+
+{/* CATEGORY */}
+
+
+
+<td
+
+className="
+
+text-center
+
+text-[#7A1232]
+
+"
+
+>
 
 
 {product.category_name}
@@ -510,7 +771,23 @@ className="border-b"
 
 
 
-<td>
+
+
+
+{/* PRICE */}
+
+
+<td
+
+className="
+
+text-center
+
+font-medium
+
+"
+
+>
 
 
 Rs. {product.price}
@@ -523,7 +800,17 @@ Rs. {product.price}
 
 
 
-<td>
+
+
+{/* STOCK */}
+
+
+<td
+
+className="text-center"
+
+>
+
 
 
 <span
@@ -532,13 +819,15 @@ className="
 
 bg-[#F4E6EA]
 
-text-[#6D1A36]
+text-[#7A1232]
 
-px-3
+px-4
 
 py-1
 
 rounded-full
+
+font-semibold
 
 "
 
@@ -551,12 +840,18 @@ rounded-full
 </span>
 
 
+
 </td>
 
 
 
 
 
+
+
+
+
+{/* ACTION */}
 
 
 <td>
@@ -568,9 +863,9 @@ className="
 
 flex
 
-gap-4
-
 justify-center
+
+gap-5
 
 "
 
@@ -578,10 +873,12 @@ justify-center
 
 
 
+
 <button
 
 
 onClick={()=>
+
 
 navigate(
 
@@ -595,14 +892,26 @@ navigate(
 >
 
 
+
 <FiEdit
 
-className="text-[#6D1A36]"
+className="
+
+text-xl
+
+text-[#7A1232]
+
+hover:scale-125
+
+transition
+
+"
 
 />
 
 
 </button>
+
 
 
 
@@ -613,19 +922,25 @@ className="text-[#6D1A36]"
 <button
 
 
-onClick={()=>deleteProduct(
-
-product.product_id
-
-)}
-
+onClick={()=>deleteProduct(product.product_id)}
 
 >
 
 
+
 <FiTrash2
 
-className="text-red-700"
+className="
+
+text-xl
+
+text-red-700
+
+hover:scale-125
+
+transition
+
+"
 
 />
 
@@ -635,8 +950,8 @@ className="text-red-700"
 
 
 
-</div>
 
+</div>
 
 
 </td>
@@ -644,7 +959,9 @@ className="text-red-700"
 
 
 
-</tr>
+
+
+</motion.tr>
 
 
 )
@@ -652,6 +969,7 @@ className="text-red-700"
 )
 
 }
+
 
 
 
@@ -663,7 +981,10 @@ className="text-red-700"
 
 
 
-</div>
+
+
+
+</motion.div>
 
 
 }
@@ -671,9 +992,7 @@ className="text-red-700"
 
 
 
-
 </div>
-
 
 )
 

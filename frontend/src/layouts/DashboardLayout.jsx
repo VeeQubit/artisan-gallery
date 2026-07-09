@@ -1,6 +1,10 @@
 import Sidebar from "../components/Sidebar";
-import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+
+import {
+  motion
+} from "framer-motion";
+
 
 
 function DashboardLayout({
@@ -13,10 +17,86 @@ children
 return(
 
 
-<div className="flex">
+<div
+
+
+className="
+
+flex
+
+h-screen
+
+overflow-hidden
+
+bg-gradient-to-br
+
+from-[#FFF7FA]
+
+via-[#F8E8EF]
+
+to-[#F3D6E1]
+
+"
+
+>
+
+
+
+
+
+<motion.div
+
+
+initial={{
+
+x:-100,
+
+opacity:0
+
+}}
+
+
+animate={{
+
+x:0,
+
+opacity:1
+
+}}
+
+
+transition={{
+
+duration:.7,
+
+ease:"easeOut",
+
+delay:.1
+
+}}
+
+
+className="
+
+h-screen
+
+shrink-0
+
+"
+
+>
 
 
 <Sidebar/>
+
+
+</motion.div>
+
+
+
+
+
+
 
 
 <div
@@ -25,15 +105,56 @@ className="
 
 flex-1
 
-min-h-screen
+h-screen
 
-bg-gradient-to-br
+flex
 
-from-[#FAF7F7]
+flex-col
 
-via-[#F4E6EA]
+overflow-hidden
 
-to-[#EFE1E6]
+"
+
+>
+
+
+
+
+
+
+<motion.div
+
+
+initial={{
+
+y:-50,
+
+opacity:0
+
+}}
+
+
+animate={{
+
+y:0,
+
+opacity:1
+
+}}
+
+
+transition={{
+
+duration:.6,
+
+delay:.25
+
+}}
+
+
+className="
+
+shrink-0
 
 "
 
@@ -43,36 +164,84 @@ to-[#EFE1E6]
 <Navbar/>
 
 
+</motion.div>
+
+
+
+
+
+
+
+
+
+
 <motion.main
-  initial={{
-    opacity: 0,
-    y: 20
-  }}
-  animate={{
-    opacity: 1,
-    y: 0
-  }}
-  transition={{
-    duration: 0.4
-  }}
-  className="p-8"
+
+
+initial={{
+
+opacity:0,
+
+y:40
+
+}}
+
+
+animate={{
+
+opacity:1,
+
+y:0
+
+}}
+
+
+transition={{
+
+duration:.6,
+
+delay:.4
+
+}}
+
+
+
+className="
+
+flex-1
+
+p-8
+
+overflow-y-auto
+
+"
+
 >
 
-  {children}
+
+{children}
+
+
 
 </motion.main>
 
 
 
-</div>
 
 
 </div>
+
+
+
+
+</div>
+
 
 )
 
 
 }
+
 
 
 export default DashboardLayout;

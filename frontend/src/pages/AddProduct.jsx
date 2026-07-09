@@ -1,21 +1,45 @@
-import { useState } from "react";
+import {
+useEffect,
+useState
+} from "react";
 
-import { useNavigate } from "react-router-dom";
+
+import {
+useNavigate
+} from "react-router-dom";
+
+
+import {
+motion
+} from "framer-motion";
+
 
 import api from "../api/axios";
 
-import Input from "../components/Input";
 
 import Button from "../components/Button";
+
+
+import toast from "react-hot-toast";
+
+
 
 
 function AddProduct(){
 
 
-const navigate=useNavigate();
+const navigate = useNavigate();
 
 
-const [form,setForm]=useState({
+
+const [categories,setCategories] = useState([]);
+
+
+const [saving,setSaving] = useState(false);
+
+
+
+const [form,setForm] = useState({
 
 
 category_id:"",
@@ -35,6 +59,63 @@ image:""
 
 
 
+
+
+
+
+useEffect(()=>{
+
+
+const fetchCategories = async()=>{
+
+
+try{
+
+
+const res =
+await api.get(
+"/categories"
+);
+
+
+
+setCategories(
+res.data.categories
+);
+
+
+
+}
+
+
+catch(error){
+
+
+toast.error(
+"Failed to load categories"
+);
+
+
+}
+
+
+};
+
+
+
+fetchCategories();
+
+
+
+},[]);
+
+
+
+
+
+
+
+
 const handleChange=(e)=>{
 
 
@@ -44,10 +125,16 @@ setForm({
 
 [e.target.name]:e.target.value
 
+
 });
 
 
 };
+
+
+
+
+
 
 
 
@@ -62,17 +149,23 @@ e.preventDefault();
 try{
 
 
-const token=
+setSaving(true);
 
+
+
+const token =
 localStorage.getItem("token");
 
 
 
+
+const res =
 await api.post(
 
 "/products",
 
 form,
+
 
 {
 
@@ -88,7 +181,23 @@ Authorization:`Bearer ${token}`
 
 
 
-navigate("/products");
+
+
+toast.success(
+
+res.data.message
+
+);
+
+
+
+
+navigate(
+
+"/products"
+
+);
+
 
 
 }
@@ -98,10 +207,31 @@ navigate("/products");
 catch(error){
 
 
-alert("Product creation failed");
+
+toast.error(
+
+
+error.response?.data?.message ||
+
+"Product creation failed"
+
+
+);
+
 
 
 }
+
+
+
+finally{
+
+
+setSaving(false);
+
+
+}
+
 
 
 };
@@ -109,9 +239,52 @@ alert("Product creation failed");
 
 
 
+
+
+
+
+
+
 return(
 
-<div>
+
+<motion.div
+
+
+initial={{
+
+opacity:0,
+
+y:30
+
+}}
+
+
+
+animate={{
+
+opacity:1,
+
+y:0
+
+}}
+
+
+
+transition={{
+
+duration:.5
+
+}}
+
+
+>
+
+
+
+
+
+<div className="mb-8">
 
 
 <h1
@@ -122,9 +295,7 @@ text-3xl
 
 font-bold
 
-text-[#3B0A1E]
-
-mb-8
+text-[#3B0617]
 
 "
 
@@ -136,15 +307,40 @@ Add New Product
 
 
 
+<p
+
+className="text-[#9F4564] mt-2"
+
+>
+
+Create a new artisan inventory item
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
 <form
 
 
 onSubmit={submit}
 
 
+
 className="
 
 bg-white/80
+
+backdrop-blur-xl
 
 rounded-3xl
 
@@ -152,9 +348,13 @@ shadow-xl
 
 p-8
 
-space-y-5
+space-y-6
 
-max-w-2xl
+max-w-3xl
+
+border
+
+border-[#F4D7E1]
 
 "
 
@@ -162,103 +362,374 @@ max-w-2xl
 
 
 
-<Input
+
+
+
+
+
+
+<div>
+
+
+<label className="font-semibold text-[#3B0617]">
+
+Product Name
+
+</label>
+
+
+
+<input
+
 
 name="name"
 
-placeholder="Product Name"
+
+value={form.name}
+
 
 onChange={handleChange}
+
+
+
+placeholder="Enter product name"
+
+
+
+className="inputStyle"
+
 
 />
 
 
+</div>
 
-<Input
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<label className="font-semibold text-[#3B0617]">
+
+Category
+
+</label>
+
+
+
+
+<select
+
 
 name="category_id"
 
-placeholder="Category ID"
+
+value={form.category_id}
+
 
 onChange={handleChange}
 
-/>
+
+
+className="inputStyle"
+
+
+
+>
+
+
+<option value="">
+
+Select category
+
+</option>
 
 
 
 
-<Input
+{
+
+
+categories.map((item)=>(
+
+
+
+<option
+
+
+key={item.category_id}
+
+
+value={item.category_id}
+
+
+>
+
+
+{item.category_name}
+
+
+
+</option>
+
+
+
+))
+
+
+}
+
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div className="grid md:grid-cols-2 gap-5">
+
+
+
+
+
+<div>
+
+
+<label className="font-semibold text-[#3B0617]">
+
+Price
+
+</label>
+
+
+
+<input
+
 
 name="price"
 
-placeholder="Price"
+
+type="number"
+
+
+value={form.price}
+
+
 
 onChange={handleChange}
+
+
+
+placeholder="Product price"
+
+
+className="inputStyle"
+
 
 />
 
 
+</div>
 
-<Input
+
+
+
+
+
+
+<div>
+
+
+<label className="font-semibold text-[#3B0617]">
+
+Quantity
+
+</label>
+
+
+
+<input
+
 
 name="quantity"
 
-placeholder="Quantity"
+
+type="number"
+
+
+value={form.quantity}
+
 
 onChange={handleChange}
+
+
+placeholder="Available stock"
+
+
+className="inputStyle"
+
 
 />
 
 
+</div>
 
 
-<Input
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<label className="font-semibold text-[#3B0617]">
+
+Image URL
+
+</label>
+
+
+
+<input
+
 
 name="image"
 
-placeholder="Image URL"
+
+value={form.image}
+
 
 onChange={handleChange}
 
+
+placeholder="Product image link"
+
+
+className="inputStyle"
+
+
 />
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<label className="font-semibold text-[#3B0617]">
+
+Description
+
+</label>
 
 
 
 
 <textarea
 
+
 name="description"
 
-placeholder="Description"
+
+value={form.description}
+
 
 onChange={handleChange}
 
 
+
+placeholder="Product description"
+
+
+
 className="
 
-w-full
+inputStyle
 
-p-4
+min-h-[120px]
 
-rounded-xl
-
-border
-
-border-[#E7CAD2]
-
-outline-none
+resize-none
 
 "
+
 
 />
 
 
 
-<Button type="submit">
+</div>
 
-Save Product
+
+
+
+
+
+
+
+
+<Button
+
+type="submit"
+
+disabled={saving}
+
+>
+
+
+{
+
+
+saving ?
+
+"Saving Product..."
+
+:
+
+"Save Product"
+
+
+}
+
 
 </Button>
+
+
 
 
 
@@ -266,12 +737,16 @@ Save Product
 
 
 
-</div>
+
+
+</motion.div>
+
 
 )
 
 
 }
+
 
 
 export default AddProduct;

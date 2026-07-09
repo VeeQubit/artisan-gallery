@@ -18,7 +18,7 @@ import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import Categories from "./pages/Categories";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import NotFound from "./pages/NotFound";
 function App(){
 
 
@@ -136,7 +136,13 @@ element={
 
 />
 
+<Route
 
+path="*"
+
+element={<NotFound/>}
+
+/>
 </Routes>
 
 
