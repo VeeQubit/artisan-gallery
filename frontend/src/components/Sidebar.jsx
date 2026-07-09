@@ -23,7 +23,7 @@ FiLogOut
 } from "react-icons/fi";
 
 
-
+import toast from "react-hot-toast";
 
 
 
@@ -39,6 +39,13 @@ const logout=()=>{
 
 
 localStorage.clear();
+
+
+toast.success(
+
+"Logged out successfully"
+
+);
 
 
 navigate("/");

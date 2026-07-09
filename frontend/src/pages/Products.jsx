@@ -19,12 +19,25 @@ FiPlus
 
 
 import api from "../api/axios";
+
 import { useNavigate } from "react-router-dom";
+
+import Loader from "../components/Loader";
+
+import toast from "react-hot-toast";
+
+
 
 function Products(){
 
+
 const navigate = useNavigate();
+
+
 const [products,setProducts]=useState([]);
+
+const [loading,setLoading]=useState(true);
+
 
 
 
@@ -34,10 +47,22 @@ const fetchProducts=async()=>{
 try{
 
 
-const res=await api.get("/products");
+setLoading(true);
 
 
-setProducts(res.data.products);
+
+const res=
+
+await api.get("/products");
+
+
+
+setProducts(
+
+res.data.products
+
+);
+
 
 
 }
@@ -52,7 +77,17 @@ console.log(error);
 }
 
 
+finally{
+
+
+setLoading(false);
+
+
+}
+
+
 };
+
 
 
 
@@ -64,6 +99,7 @@ fetchProducts();
 
 
 },[]);
+
 
 
 
@@ -88,6 +124,7 @@ return;
 
 
 
+
 try{
 
 
@@ -106,11 +143,22 @@ await api.delete(
 
 headers:{
 
+
 Authorization:`Bearer ${token}`
 
-}
 
 }
+
+
+}
+
+);
+
+
+
+toast.success(
+
+"Product deleted successfully"
 
 );
 
@@ -122,10 +170,17 @@ fetchProducts();
 
 }
 
+
 catch(error){
 
 
-alert("Delete failed");
+
+toast.error(
+
+"Delete failed"
+
+);
+
 
 
 }
@@ -138,9 +193,11 @@ alert("Delete failed");
 
 
 
+
 return(
 
 <div>
+
 
 
 <div
@@ -158,6 +215,7 @@ mb-8
 "
 
 >
+
 
 
 <div>
@@ -194,13 +252,20 @@ Manage handmade collections
 </p>
 
 
+
 </div>
 
 
 
 
+
+
 <button
+
+
 onClick={()=>navigate("/products/add")}
+
+
 className="
 
 flex
@@ -229,12 +294,17 @@ shadow-lg
 
 >
 
+
 <FiPlus/>
+
 
 Add Product
 
 
+
 </button>
+
+
 
 
 </div>
@@ -242,6 +312,18 @@ Add Product
 
 
 
+
+
+{
+
+
+loading ?
+
+
+<Loader/>
+
+
+:
 
 
 <div
@@ -254,11 +336,12 @@ rounded-3xl
 
 shadow-xl
 
-overflow-hidden
+overflow-x-auto
 
 "
 
 >
+
 
 
 <table
@@ -269,6 +352,7 @@ className="w-full"
 
 
 <thead>
+
 
 
 <tr
@@ -291,11 +375,13 @@ Product
 </th>
 
 
+
 <th>
 
 Category
 
 </th>
+
 
 
 <th>
@@ -305,6 +391,7 @@ Price
 </th>
 
 
+
 <th>
 
 Stock
@@ -312,11 +399,13 @@ Stock
 </th>
 
 
+
 <th>
 
 Actions
 
 </th>
+
 
 
 </tr>
@@ -327,7 +416,56 @@ Actions
 
 
 
+
+
 <tbody>
+
+
+
+{
+
+
+products.length===0 && (
+
+
+<tr>
+
+
+<td
+
+colSpan="5"
+
+
+className="
+
+text-center
+
+p-10
+
+text-[#9F4564]
+
+"
+
+>
+
+
+No products available
+
+
+</td>
+
+
+</tr>
+
+
+)
+
+}
+
+
+
+
+
 
 
 {
@@ -336,6 +474,7 @@ Actions
 products.map(
 
 (product)=>(
+
 
 
 <tr
@@ -347,6 +486,7 @@ className="border-b"
 >
 
 
+
 <td className="p-5">
 
 
@@ -354,6 +494,7 @@ className="border-b"
 
 
 </td>
+
 
 
 
@@ -368,6 +509,7 @@ className="border-b"
 
 
 
+
 <td>
 
 
@@ -375,6 +517,8 @@ Rs. {product.price}
 
 
 </td>
+
+
 
 
 
@@ -412,6 +556,9 @@ rounded-full
 
 
 
+
+
+
 <td>
 
 
@@ -432,22 +579,46 @@ justify-center
 
 
 <button
-  onClick={() =>
-    navigate(`/products/edit/${product.product_id}`)
-  }
+
+
+onClick={()=>
+
+navigate(
+
+`/products/edit/${product.product_id}`
+
+)
+
+}
+
+
 >
-  <FiEdit className="text-[#6D1A36]" />
+
+
+<FiEdit
+
+className="text-[#6D1A36]"
+
+/>
+
+
 </button>
 
 
 
+
+
+
+
 <button
+
 
 onClick={()=>deleteProduct(
 
 product.product_id
 
 )}
+
 
 >
 
@@ -463,11 +634,13 @@ className="text-red-700"
 
 
 
+
 </div>
 
 
 
 </td>
+
 
 
 
@@ -485,11 +658,17 @@ className="text-red-700"
 </tbody>
 
 
+
 </table>
 
 
 
 </div>
+
+
+}
+
+
 
 
 
@@ -500,6 +679,7 @@ className="text-red-700"
 
 
 }
+
 
 
 export default Products;
