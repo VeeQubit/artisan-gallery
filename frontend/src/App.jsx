@@ -16,7 +16,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
-
+import Categories from "./pages/Categories";
 function App(){
 
 
@@ -103,6 +103,25 @@ element={
 <AddProduct/>
 
 </DashboardLayout>
+
+}
+
+/>
+<Route
+
+path="/categories"
+
+element={
+
+
+<DashboardLayout>
+
+
+<Categories/>
+
+
+</DashboardLayout>
+
 
 }
 

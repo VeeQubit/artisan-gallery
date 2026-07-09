@@ -1,4 +1,16 @@
+import {
+
+useEffect,
+
+useState
+
+} from "react";
+
+
 import Card from "../components/Card";
+
+
+import api from "../api/axios";
 
 
 import {
@@ -18,40 +30,108 @@ FiTrendingUp
 function Dashboard(){
 
 
-const stats=[
+const [stats,setStats]=useState({
+
+
+products:0,
+
+categories:0,
+
+stock:0
+
+
+});
+
+
+
+
+useEffect(()=>{
+
+
+const fetchStats=async()=>{
+
+
+try{
+
+
+const res=
+
+await api.get("/dashboard/stats");
+
+
+
+setStats(res.data);
+
+
+
+}
+
+
+catch(error){
+
+
+console.log(
+
+"Dashboard stats error",
+
+error
+
+);
+
+
+}
+
+
+};
+
+
+
+fetchStats();
+
+
+},[]);
+
+
+
+
+
+const dashboardCards=[
 
 
 {
 
 title:"Products",
 
-value:"120",
+value:stats.products,
 
 icon:<FiBox/>
 
 },
 
 
+
 {
 
 title:"Categories",
 
-value:"8",
+value:stats.categories,
 
 icon:<FiTag/>
 
 },
 
 
+
 {
 
 title:"Stock Items",
 
-value:"450",
+value:stats.stock || 0,
 
 icon:<FiShoppingBag/>
 
 },
+
 
 
 {
@@ -70,9 +150,14 @@ icon:<FiTrendingUp/>
 
 
 
+
+
 return(
 
 <div>
+
+
+{/* Header */}
 
 
 <div className="mb-8">
@@ -98,7 +183,17 @@ Business Overview
 
 
 
-<p className="text-[#9F4564] mt-1">
+<p
+
+className="
+
+text-[#9F4564]
+
+mt-1
+
+"
+
+>
 
 Track your handmade collection performance
 
@@ -108,6 +203,12 @@ Track your handmade collection performance
 </div>
 
 
+
+
+
+
+
+{/* Statistic Cards */}
 
 
 <div
@@ -132,7 +233,9 @@ gap-6
 {
 
 
-stats.map((item,index)=>(
+dashboardCards.map(
+
+(item,index)=>(
 
 
 
@@ -167,9 +270,13 @@ mb-5
 
 >
 
+
 {item.icon}
 
+
+
 </div>
+
 
 
 
@@ -188,9 +295,14 @@ text-[#3B0A1E]
 
 >
 
+
 {item.value}
 
+
+
 </h2>
+
+
 
 
 
@@ -206,7 +318,10 @@ mt-2
 
 >
 
+
 {item.title}
+
+
 
 </p>
 
@@ -215,14 +330,23 @@ mt-2
 </Card>
 
 
+)
 
-))
+)
 
 }
 
 
 </div>
 
+
+
+
+
+
+
+
+{/* Welcome Section */}
 
 
 <div
@@ -250,18 +374,41 @@ shadow-xl
 >
 
 
-<h2 className="text-3xl font-bold">
+<h2
+
+className="
+
+text-3xl
+
+font-bold
+
+"
+
+>
 
 Welcome Back Admin
 
 </h2>
 
 
-<p className="mt-3 opacity-80">
+
+
+<p
+
+className="
+
+mt-3
+
+opacity-80
+
+"
+
+>
 
 Manage your artisan products, categories and creative inventory.
 
 </p>
+
 
 
 </div>
@@ -274,6 +421,7 @@ Manage your artisan products, categories and creative inventory.
 
 
 }
+
 
 
 export default Dashboard;
