@@ -19,11 +19,11 @@ FiPlus
 
 
 import api from "../api/axios";
-
+import { useNavigate } from "react-router-dom";
 
 function Products(){
 
-
+const navigate = useNavigate();
 const [products,setProducts]=useState([]);
 
 
@@ -200,7 +200,7 @@ Manage handmade collections
 
 
 <button
-
+onClick={()=>navigate("/products/add")}
 className="
 
 flex
@@ -430,18 +430,14 @@ justify-center
 >
 
 
-<button>
 
-
-<FiEdit
-
-className="text-[#6D1A36]"
-
-/>
-
-
+<button
+  onClick={() =>
+    navigate(`/products/edit/${product.product_id}`)
+  }
+>
+  <FiEdit className="text-[#6D1A36]" />
 </button>
-
 
 
 

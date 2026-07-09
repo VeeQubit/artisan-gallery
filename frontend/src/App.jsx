@@ -14,6 +14,8 @@ import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./layouts/DashboardLayout";
 
 import Products from "./pages/Products";
+import AddProduct from "./pages/AddProduct";
+import EditProduct from "./pages/EditProduct";
 
 function App(){
 
@@ -67,6 +69,40 @@ element={
 
 </DashboardLayout>
 
+
+}
+
+/>
+<Route
+
+path="/products/edit/:id"
+
+element={
+
+
+<DashboardLayout>
+
+
+<EditProduct/>
+
+
+</DashboardLayout>
+
+
+}
+
+/>
+<Route
+
+path="/products/add"
+
+element={
+
+<DashboardLayout>
+
+<AddProduct/>
+
+</DashboardLayout>
 
 }
 
