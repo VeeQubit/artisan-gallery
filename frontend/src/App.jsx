@@ -1,28 +1,52 @@
+import {
+
+Routes,
+
+Route
+
+} from "react-router-dom";
 
 
-import './App.css'
+import Login from "./pages/Login";
+
+import Dashboard from "./pages/Dashboard";
+
+
 
 function App(){
 
 
 return(
 
-<div>
+
+<Routes>
 
 
-<h1>
+<Route
 
-Artisan Gallery
+path="/"
 
-</h1>
+element={<Login/>}
+
+/>
 
 
-</div>
+<Route
+
+path="/dashboard"
+
+element={<Dashboard/>}
+
+/>
+
+
+</Routes>
+
 
 )
 
-}
 
+}
 
 
 export default App;
