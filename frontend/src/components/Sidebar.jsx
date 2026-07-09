@@ -1,14 +1,97 @@
-import { Link } from "react-router-dom";
+import {
+
+NavLink,
+
+useNavigate
+
+} from "react-router-dom";
+
+
 
 import {
+
+
 FiGrid,
+
 FiBox,
+
 FiTag,
+
 FiLogOut
+
+
 } from "react-icons/fi";
 
 
+
+
+
+
 function Sidebar(){
+
+
+const navigate=useNavigate();
+
+
+
+
+const logout=()=>{
+
+
+localStorage.clear();
+
+
+navigate("/");
+
+
+};
+
+
+
+
+const menu=[
+
+
+{
+
+name:"Dashboard",
+
+path:"/dashboard",
+
+icon:<FiGrid/>
+
+},
+
+
+
+{
+
+name:"Products",
+
+path:"/products",
+
+icon:<FiBox/>
+
+},
+
+
+
+{
+
+name:"Categories",
+
+path:"/categories",
+
+icon:<FiTag/>
+
+}
+
+
+];
+
+
+
+
 
 
 return(
@@ -33,7 +116,6 @@ p-6
 
 "
 
-
 >
 
 
@@ -57,63 +139,33 @@ Artisan Gallery
 
 
 
-<nav className="space-y-4">
+
+
+<div className="space-y-3">
+
+
+{
+
+
+menu.map(
+
+(item)=>(
+
+
+<NavLink
+
+
+key={item.name}
+
+
+to={item.path}
 
 
 
-<Link
-
-className="flex items-center gap-3"
-
-to="/dashboard"
-
->
-
-<FiGrid/>
-
-Dashboard
-
-</Link>
+className={({isActive})=>
 
 
-
-
-<Link
-
-className="flex items-center gap-3"
-
-to="/products"
-
->
-
-<FiBox/>
-
-Products
-
-</Link>
-
-
-
-
-<Link
-
-className="flex items-center gap-3"
-
-to="/categories"
-
->
-
-<FiTag/>
-
-Categories
-
-</Link>
-
-
-
-<button
-
-className="
+`
 
 flex
 
@@ -121,23 +173,108 @@ items-center
 
 gap-3
 
-pt-10
+px-4
+
+py-3
+
+rounded-xl
+
+transition
+
+
+
+${
+
+isActive
+
+?
+
+"bg-white text-[#6D1A36]"
+
+:
+
+"hover:bg-white/20"
+
+
+}
+
+
+`
+
+}
+
+
+
+>
+
+
+{item.icon}
+
+
+{item.name}
+
+
+
+</NavLink>
+
+
+)
+
+)
+
+}
+
+
+</div>
+
+
+
+
+
+
+
+<button
+
+
+onClick={logout}
+
+
+className="
+
+
+flex
+
+items-center
+
+gap-3
+
+mt-20
+
+px-4
+
+py-3
+
+rounded-xl
+
+hover:bg-white/20
+
+w-full
 
 "
+
 
 >
 
 
 <FiLogOut/>
 
+
 Logout
+
 
 
 </button>
 
-
-
-</nav>
 
 
 </div>
@@ -147,6 +284,7 @@ Logout
 
 
 }
+
 
 
 export default Sidebar;

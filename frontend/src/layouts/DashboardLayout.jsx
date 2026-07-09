@@ -1,5 +1,5 @@
 import Sidebar from "../components/Sidebar";
-
+import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 
 
@@ -43,13 +43,24 @@ to-[#EFE1E6]
 <Navbar/>
 
 
-<main className="p-8">
+<motion.main
+  initial={{
+    opacity: 0,
+    y: 20
+  }}
+  animate={{
+    opacity: 1,
+    y: 0
+  }}
+  transition={{
+    duration: 0.4
+  }}
+  className="p-8"
+>
 
+  {children}
 
-{children}
-
-
-</main>
+</motion.main>
 
 
 

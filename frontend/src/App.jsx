@@ -17,6 +17,8 @@ import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import Categories from "./pages/Categories";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App(){
 
 
@@ -39,7 +41,7 @@ element={<Login/>}
 path="/products"
 
 element={
-
+<ProtectedRoute>
 
 <DashboardLayout>
 
@@ -49,7 +51,7 @@ element={
 
 </DashboardLayout>
 
-
+</ProtectedRoute>
 }
 
 />
@@ -61,6 +63,9 @@ path="/dashboard"
 element={
 
 
+<ProtectedRoute>
+
+
 <DashboardLayout>
 
 
@@ -68,6 +73,9 @@ element={
 
 
 </DashboardLayout>
+
+
+</ProtectedRoute>
 
 
 }
@@ -79,7 +87,7 @@ path="/products/edit/:id"
 
 element={
 
-
+<ProtectedRoute>
 <DashboardLayout>
 
 
@@ -88,7 +96,7 @@ element={
 
 </DashboardLayout>
 
-
+</ProtectedRoute>
 }
 
 />
@@ -97,14 +105,14 @@ element={
 path="/products/add"
 
 element={
-
+<ProtectedRoute>
 <DashboardLayout>
 
 <AddProduct/>
 
 </DashboardLayout>
 
-}
+</ProtectedRoute>}
 
 />
 <Route
@@ -113,7 +121,7 @@ path="/categories"
 
 element={
 
-
+<ProtectedRoute>
 <DashboardLayout>
 
 
@@ -121,6 +129,7 @@ element={
 
 
 </DashboardLayout>
+</ProtectedRoute>
 
 
 }
