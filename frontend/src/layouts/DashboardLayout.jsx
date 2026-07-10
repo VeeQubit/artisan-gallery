@@ -2,243 +2,288 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 
 import {
-  motion
+  motion,
+  AnimatePresence
 } from "framer-motion";
 
+import { useState } from "react";
 
+import { FiMenu } from "react-icons/fi";
 
-function DashboardLayout({
 
-children
 
-}){
+function DashboardLayout({ children }) {
 
+  const [openSidebar, setOpenSidebar] = useState(false);
 
-return(
 
 
-<div
+  return (
 
+    <div
+      className="
+        flex
 
-className="
+        h-screen
 
-flex
+        overflow-hidden
 
-h-screen
+        bg-gradient-to-br
+        from-[#FFF7FA]
+        via-[#F8E8EF]
+        to-[#F3D6E1]
+      "
+    >
 
-overflow-hidden
 
-bg-gradient-to-br
 
-from-[#FFF7FA]
+      {/* DESKTOP SIDEBAR */}
+      <div
+        className="
+          hidden
 
-via-[#F8E8EF]
+          md:block
 
-to-[#F3D6E1]
+          h-screen
 
-"
+          shrink-0
+        "
+      >
 
->
+        <Sidebar />
 
+      </div>
 
 
 
 
-<motion.div
 
 
-initial={{
+      {/* MOBILE SIDEBAR */}
+      <AnimatePresence>
 
-x:-100,
+        {
 
-opacity:0
+          openSidebar && (
 
-}}
+            <>
 
+              <motion.div
+                initial={{
+                  opacity: 0
+                }}
+                animate={{
+                  opacity: 1
+                }}
+                exit={{
+                  opacity: 0
+                }}
 
-animate={{
+                onClick={() => setOpenSidebar(false)}
 
-x:0,
+                className="
+                  fixed
 
-opacity:1
+                  inset-0
 
-}}
+                  bg-black/40
 
+                  z-40
 
-transition={{
+                  md:hidden
+                "
+              />
 
-duration:.7,
 
-ease:"easeOut",
 
-delay:.1
 
-}}
+              <motion.div
+                initial={{
+                  x: -300
+                }}
+                animate={{
+                  x: 0
+                }}
+                exit={{
+                  x: -300
+                }}
+                transition={{
+                  duration: .35
+                }}
 
+                className="
+                  fixed
 
-className="
+                  left-0
 
-h-screen
+                  top-0
 
-shrink-0
+                  z-50
 
-"
+                  md:hidden
+                "
+              >
 
->
+                <Sidebar
+                  closeSidebar={() => setOpenSidebar(false)}
+                />
 
+              </motion.div>
 
-<Sidebar/>
 
+            </>
 
-</motion.div>
+          )
 
+        }
 
+      </AnimatePresence>
 
 
 
 
 
 
-<div
 
-className="
+      <div
+        className="
+          flex-1
 
-flex-1
+          h-screen
 
-h-screen
+          flex
 
-flex
+          flex-col
 
-flex-col
+          overflow-hidden
+        "
+      >
 
-overflow-hidden
 
-"
 
->
 
+        {/* MOBILE MENU BUTTON */}
+        <button
+          onClick={() => setOpenSidebar(true)}
 
+          className="
+            md:hidden
 
+            fixed
 
+            top-5
 
+            right-7
 
-<motion.div
+            z-30
 
 
-initial={{
+            w-12
 
-y:-50,
+            h-12
 
-opacity:0
 
-}}
+            rounded-2xl
 
 
-animate={{
+            bg-[#7A1232]
 
-y:0,
 
-opacity:1
+            text-white
 
-}}
 
+            flex
 
-transition={{
+            items-center
 
-duration:.6,
+            justify-center
 
-delay:.25
 
-}}
+            shadow-xl
 
+            hover:scale-105
 
-className="
+            transition
+          "
+        >
 
-shrink-0
+          <FiMenu size={24} />
 
-"
+        </button>
 
->
 
 
-<Navbar/>
 
 
-</motion.div>
 
 
+        <motion.div
+          initial={{
+            y: -50,
+            opacity: 0
+          }}
+          animate={{
+            y: 0,
+            opacity: 1
+          }}
+          transition={{
+            duration: .6,
+            delay: .25
+          }}
 
+          className="
+            shrink-0
+          "
+        >
 
+          <Navbar />
 
+        </motion.div>
 
 
 
 
 
-<motion.main
 
 
-initial={{
+        <motion.main
+          initial={{
+            opacity: 0,
+            y: 40
+          }}
+          animate={{
+            opacity: 1,
+            y: 0
+          }}
+          transition={{
+            duration: .6,
+            delay: .4
+          }}
 
-opacity:0,
+          className="
+            flex-1
 
-y:40
+            p-8
 
-}}
+            overflow-y-auto
+          "
+        >
 
+          {children}
 
-animate={{
+        </motion.main>
 
-opacity:1,
 
-y:0
 
-}}
 
+      </div>
 
-transition={{
 
-duration:.6,
 
-delay:.4
 
-}}
+    </div>
 
-
-
-className="
-
-flex-1
-
-p-8
-
-overflow-y-auto
-
-"
-
->
-
-
-{children}
-
-
-
-</motion.main>
-
-
-
-
-
-</div>
-
-
-
-
-</div>
-
-
-)
-
+  );
 
 }
 

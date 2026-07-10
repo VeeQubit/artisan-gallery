@@ -90,7 +90,7 @@ res.data.categories
 
 catch(error){
 
-
+console.log(error);
 toast.error(
 
 "Failed to load categories"
@@ -841,10 +841,15 @@ delay:index*.1
 key={item.category_id}
 
 
-className="border-b"
+className="border-b
 
+border-[#F4D7E1]
 
+hover:bg-[#FFF7FA]
 
+transition
+
+"
 >
 
 
